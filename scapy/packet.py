@@ -708,7 +708,9 @@ class Packet(
             cloneB = other.copy()
             cloneA.add_payload(cloneB)
             return cloneA
-        elif isinstance(other, (bytes, str, bytearray, memoryview)):
+        elif isinstance(other, (int, bytes, str, bytearray, memoryview)):
+            # An int is stacked like a raw payload: bytes(n) gives a zero
+            # filled Raw load (so ``pkt / 0`` carries an empty payload).
             return self / conf.raw_layer(load=bytes_encode(other))
         else:
             return other.__rdiv__(self)  # type: ignore
